@@ -26,6 +26,6 @@ pub fn main() -> () {
     print_bits(&buf[10]);
     print_bits(&buf[11]);
 
-    let header = Header::from_buf(buf);
+    let header = Header::from_buf(&buf);
     dbg!(header);
 }

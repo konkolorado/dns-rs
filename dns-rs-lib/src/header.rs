@@ -20,7 +20,7 @@ pub struct Header {
 }
 
 impl Header {
-    pub fn from_buf(buf: Vec<u8>) -> Self {
+    pub fn from_buf(buf: &Vec<u8>) -> Self {
         let header = &buf[0..12];
         Self {
             identifier: Self::identifier(header),
@@ -142,14 +142,14 @@ mod tests {
             0b11000111, 0b01010111, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.identifier, 51031);
 
         let packet = vec![
             0b01000111, 0b01010111, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.identifier, 18263);
     }
 
@@ -160,7 +160,7 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
 
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.query, true);
         assert_eq!(header.response, false);
         assert_eq!(header.op_code, 1);
@@ -173,7 +173,7 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
 
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.query, false);
         assert_eq!(header.response, true);
         assert_eq!(header.op_code, 0);
@@ -188,7 +188,7 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b10000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.can_recurse, true);
         assert_eq!(header.reserved, 0);
         assert_eq!(header.resp_code, 0);
@@ -200,14 +200,14 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.question_count, 1);
 
         let packet = vec![
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.additional_count, 256);
     }
 
@@ -217,14 +217,14 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000001, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.answer_count, 1);
 
         let packet = vec![
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.additional_count, 256);
     }
 
@@ -234,14 +234,14 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000001, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.authority_count, 1);
 
         let packet = vec![
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.additional_count, 256);
     }
 
@@ -251,14 +251,14 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000001,
         ];
-        let header = Header::from_buf(packet);
+        let header = Header::from_buf(&packet);
         assert_eq!(header.additional_count, 1);
 
-        let packet = [
+        let packet = vec![
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
         ];
-        let header = Header::from_buf(packet.to_vec());
+        let header = Header::from_buf(&packet);
         assert_eq!(header.additional_count, 256);
     }
 }
