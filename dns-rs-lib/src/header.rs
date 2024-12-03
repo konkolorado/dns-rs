@@ -1,7 +1,7 @@
 pub struct Header {
     identifier: u16,
     query: bool,
-    respose: bool,
+    response: bool,
     op_code: u8,
     is_authoritative: bool,
     truncated: bool,
