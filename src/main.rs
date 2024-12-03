@@ -1,5 +1,6 @@
 use dns_rs_lib::header::Header;
 use dns_rs_lib::parser::print_bits;
+use dns_rs_lib::question::Question;
 
 use std::{fs::File, io::Read};
 
@@ -28,4 +29,7 @@ pub fn main() -> () {
 
     let header = Header::from_buf(&buf);
     dbg!(header);
+
+    let question = Question::from_buf(&buf);
+    dbg!(question);
 }
