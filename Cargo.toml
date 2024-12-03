@@ -1,0 +1,9 @@
+[package]
+name = "dns-rs"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+
+[dependencies]
+dns-rs-lib = { path = "dns-rs-lib" }
