@@ -12,24 +12,21 @@ pub fn from_file(filename: &str) -> Vec<u8> {
 }
 
 pub fn main() -> () {
-    let buf = from_file("response_packet.txt");
+    let buf = from_file("query_packet.txt");
 
-    print_bits(&buf[0]);
-    print_bits(&buf[1]);
-    print_bits(&buf[2]);
-    print_bits(&buf[3]);
-    print_bits(&buf[4]);
-    print_bits(&buf[5]);
-    print_bits(&buf[6]);
-    print_bits(&buf[7]);
-    print_bits(&buf[8]);
-    print_bits(&buf[9]);
-    print_bits(&buf[10]);
-    print_bits(&buf[11]);
-
+    /*
+    for i in 0..12 {
+        print!("{}: ", i);
+        print_bits(&buf[i]);
+    }
     let header = Header::from_buf(&buf);
     dbg!(header);
+    */
 
+    for i in 12..28 {
+        print!("{}: ", i);
+        print_bits(&buf[i]);
+    }
     let question = Question::from_buf(&buf);
     dbg!(question);
 }
