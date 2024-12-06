@@ -21,7 +21,7 @@ pub struct Header {
 }
 
 impl Header {
-    pub fn from_buf(buf: &Vec<u8>) -> Self {
+    pub fn from_buf(buf: &[u8]) -> Self {
         let header = &buf[0..12];
         Self {
             identifier: Self::identifier(header),
