@@ -1,6 +1,7 @@
 pub mod answer;
 pub mod class;
 pub mod header;
+pub mod packet;
 pub mod parser;
 pub mod question;
 pub mod records;
