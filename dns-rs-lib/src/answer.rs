@@ -10,6 +10,7 @@ pub struct Answer {
     pub ttl: u32,
     pub len: u16,
     pub ip: String,
+    pub _length: usize,
 }
 
 impl Answer {
@@ -22,6 +23,7 @@ impl Answer {
             ttl: Self::read_ttl(&buf[index + 4..]),
             len: Self::read_len(&buf[index + 8..]),
             ip: "ip".to_string(),
+            _length: index + 10 - start_at,
         }
     }
 

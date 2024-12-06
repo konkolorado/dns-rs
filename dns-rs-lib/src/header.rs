@@ -17,6 +17,7 @@ pub struct Header {
     pub answer_count: u16,
     pub authority_count: u16,
     pub additional_count: u16,
+    pub _length: usize,
 }
 
 impl Header {
@@ -37,6 +38,7 @@ impl Header {
             answer_count: Self::answer_count(header),
             authority_count: Self::authority_count(header),
             additional_count: Self::additional_count(header),
+            _length: 12,
         }
     }
 

@@ -6,16 +6,21 @@ pub struct Question {
     pub name: String,
     pub r#type: u16,
     pub class: u16,
+    pub _length: usize,
 }
 
 impl Question {
-    pub fn from_buf(buf: &Vec<u8>) -> Self {
-        let question = &buf[12..];
+    pub fn from_buf(buf: &[u8]) -> Self {
+        //let question = &buf[12..];
+        let question = buf;
+
+        // TODO - idiomatically share these read_field methods
         let (name, index) = Self::read_labels(question);
         Self {
             name,
             r#type: Self::read_type(&question[index..]),
             class: Self::read_class(&question[index + 2..]),
+            _length: index + 4,
         }
     }
 
