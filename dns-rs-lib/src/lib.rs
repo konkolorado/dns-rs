@@ -1,4 +1,5 @@
 pub mod answer;
+pub mod class;
 pub mod header;
 pub mod parser;
 pub mod question;

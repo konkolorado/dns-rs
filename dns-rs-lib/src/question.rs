@@ -1,3 +1,4 @@
+use crate::class::RRClass;
 use crate::r#type::RRType;
 use std::convert::TryInto;
 use std::str;
@@ -6,7 +7,7 @@ use std::str;
 pub struct Question {
     pub name: String,
     pub r#type: RRType,
-    pub class: u16,
+    pub class: RRClass,
     pub _length: usize,
 }
 
@@ -54,9 +55,10 @@ impl Question {
         RRType::from_value(value)
     }
 
-    pub fn read_class(buf: &[u8]) -> u16 {
+    pub fn read_class(buf: &[u8]) -> RRClass {
         let bytes = &buf[..2];
-        u16::from_be_bytes(bytes.try_into().unwrap())
+        let value = u16::from_be_bytes(bytes.try_into().unwrap());
+        RRClass::from_value(value)
     }
 }
 
@@ -79,7 +81,7 @@ mod tests {
         let question = Question::from_buf(&packet);
         assert_eq!(question.name, "google.com");
         assert_eq!(question.r#type, RRType::A);
-        assert_eq!(question.class, 1);
+        assert_eq!(question.class, RRClass::IN);
     }
 
     #[test]
@@ -97,7 +99,7 @@ mod tests {
         let question = Question::from_buf(&packet);
         assert_eq!(question.name, "google.com");
         assert_eq!(question.r#type, RRType::NS);
-        assert_eq!(question.class, 1);
+        assert_eq!(question.class, RRClass::IN);
     }
 
     #[test]
@@ -115,6 +117,6 @@ mod tests {
         let question = Question::from_buf(&packet);
         assert_eq!(question.name, "google.com");
         assert_eq!(question.r#type, RRType::A);
-        assert_eq!(question.class, 2);
+        assert_eq!(question.class, RRClass::UNKNOWN);
     }
 }
