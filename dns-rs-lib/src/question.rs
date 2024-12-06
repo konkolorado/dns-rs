@@ -77,8 +77,8 @@ mod tests {
             0b00000011, 0b01100011, 0b01101111, 0b01101101, 0b00000000, 0b00000000, 0b00000001,
             0b00000000, 0b00000001,
         ];
-        packet.extend(question);
-        let question = Question::from_buf(&packet);
+        //packet.extend(question);
+        let question = Question::from_buf(&question);
         assert_eq!(question.name, "google.com");
         assert_eq!(question.r#type, RRType::A);
         assert_eq!(question.class, RRClass::IN);
@@ -95,8 +95,8 @@ mod tests {
             0b00000011, 0b01100011, 0b01101111, 0b01101101, 0b00000000, 0b00000000, 0b00000010,
             0b00000000, 0b00000001,
         ];
-        packet.extend(question);
-        let question = Question::from_buf(&packet);
+        //packet.extend(question);
+        let question = Question::from_buf(&question);
         assert_eq!(question.name, "google.com");
         assert_eq!(question.r#type, RRType::NS);
         assert_eq!(question.class, RRClass::IN);
@@ -113,8 +113,8 @@ mod tests {
             0b00000011, 0b01100011, 0b01101111, 0b01101101, 0b00000000, 0b00000000, 0b00000001,
             0b00000000, 0b00000010,
         ];
-        packet.extend(question);
-        let question = Question::from_buf(&packet);
+        //packet.extend(question);
+        let question = Question::from_buf(&question);
         assert_eq!(question.name, "google.com");
         assert_eq!(question.r#type, RRType::A);
         assert_eq!(question.class, RRClass::UNKNOWN);
