@@ -1,11 +1,12 @@
 use crate::parser::bit_accessor;
+use crate::r#type::RRType;
 use std::convert::TryInto;
 use std::str;
 
 #[derive(Debug)]
 pub struct Answer {
     pub name: String,
-    pub r#type: u16,
+    pub r#type: RRType,
     pub class: u16,
     pub ttl: u32,
     pub len: u16,
@@ -63,9 +64,10 @@ impl Answer {
         }
     }
 
-    pub fn read_type(buf: &[u8]) -> u16 {
+    pub fn read_type(buf: &[u8]) -> RRType {
         let bytes = &buf[..2];
-        u16::from_be_bytes(bytes.try_into().unwrap())
+        let value = u16::from_be_bytes(bytes.try_into().unwrap());
+        RRType::from_value(value)
     }
 
     pub fn read_class(buf: &[u8]) -> u16 {
