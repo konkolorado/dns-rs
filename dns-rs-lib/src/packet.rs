@@ -1,4 +1,5 @@
 use crate::answer::Answer;
+use crate::buf_reader::BufReader;
 use crate::header::Header;
 use crate::question::Question;
 
@@ -6,41 +7,47 @@ use crate::question::Question;
 
 pub struct Packet {
     pub header: Header,
-    pub question: Vec<Question>,
-    pub answer: Vec<Answer>,
-    pub authority: Vec<Answer>,
-    pub additional: Vec<Answer>,
+    pub questions: Vec<Question>,
+    pub answers: Vec<Answer>,
+    pub authorities: Vec<Answer>,
+    pub additionals: Vec<Answer>,
 }
 
 impl Packet {
     pub fn from_buf(buf: &[u8]) -> Self {
-        let header = Header::from_buf(&buf);
-        let question = Question::from_buf(&buf[header._length..]);
+        let mut buf = BufReader::new(buf);
+        let header = Header::from_buf(&mut buf);
+
+        let mut questions = Vec::new();
+        for _ in 0..header.question_count {
+            let q = Question::from_buf(&mut buf);
+            questions.push(q);
+        }
 
         let mut answers = Vec::new();
         for _ in 0..header.answer_count {
-            let answer = Answer::from_buf(&buf, header._length + question._length);
-            answers.push(answer);
+            let a = Answer::from_buf(&mut buf);
+            answers.push(a);
         }
 
         let mut authorities = Vec::new();
         for _ in 0..header.authority_count {
-            let auth = Answer::from_buf(&buf, header._length + question._length);
-            authorities.push(auth);
+            let a = Answer::from_buf(&mut buf);
+            authorities.push(a);
         }
 
         let mut additionals = Vec::new();
         for _ in 0..header.additional_count {
-            let add = Answer::from_buf(&buf, header._length + question._length);
-            additionals.push(add);
+            let a = Answer::from_buf(&mut buf);
+            additionals.push(a);
         }
 
         Self {
             header,
-            question: vec![question],
-            answer: answers,
-            authority: authorities,
-            additional: additionals,
+            questions,
+            answers,
+            authorities,
+            additionals,
         }
     }
 }

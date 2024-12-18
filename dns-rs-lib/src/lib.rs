@@ -1,4 +1,5 @@
 pub mod answer;
+pub mod buf_reader;
 pub mod class;
 pub mod header;
 pub mod packet;

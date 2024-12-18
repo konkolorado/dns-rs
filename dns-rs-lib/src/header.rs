@@ -1,6 +1,8 @@
 use crate::parser;
 use std::convert::TryInto;
 
+use crate::buf_reader::BufReader;
+
 #[derive(Debug)]
 pub struct Header {
     pub identifier: u16,
@@ -17,12 +19,11 @@ pub struct Header {
     pub answer_count: u16,
     pub authority_count: u16,
     pub additional_count: u16,
-    pub _length: usize,
 }
 
 impl Header {
-    pub fn from_buf(buf: &[u8]) -> Self {
-        let header = &buf[0..12];
+    pub fn from_buf(buf: &mut BufReader) -> Self {
+        let header = buf.read(12);
         Self {
             identifier: Self::identifier(header),
             query: Self::is_query(header),
@@ -38,7 +39,6 @@ impl Header {
             answer_count: Self::answer_count(header),
             authority_count: Self::authority_count(header),
             additional_count: Self::additional_count(header),
-            _length: 12,
         }
     }
 
@@ -144,14 +144,16 @@ mod tests {
             0b11000111, 0b01010111, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.identifier, 51031);
 
         let packet = vec![
             0b01000111, 0b01010111, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.identifier, 18263);
     }
 
@@ -161,8 +163,8 @@ mod tests {
             0b00000000, 0b00000000, 0b00001111, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.query, true);
         assert_eq!(header.response, false);
         assert_eq!(header.op_code, 1);
@@ -174,8 +176,8 @@ mod tests {
             0b00000000, 0b00000000, 0b10000001, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.query, false);
         assert_eq!(header.response, true);
         assert_eq!(header.op_code, 0);
@@ -190,7 +192,8 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b10000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.can_recurse, true);
         assert_eq!(header.reserved, 0);
         assert_eq!(header.resp_code, 0);
@@ -202,14 +205,16 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.question_count, 1);
 
         let packet = vec![
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.additional_count, 256);
     }
 
@@ -219,14 +224,16 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000001, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.answer_count, 1);
 
         let packet = vec![
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.additional_count, 256);
     }
 
@@ -236,14 +243,16 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000001, 0b00000000, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.authority_count, 1);
 
         let packet = vec![
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.additional_count, 256);
     }
 
@@ -253,14 +262,16 @@ mod tests {
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000001,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.additional_count, 1);
 
         let packet = vec![
             0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
             0b00000000, 0b00000000, 0b00000000, 0b00000001, 0b00000000,
         ];
-        let header = Header::from_buf(&packet);
+        let mut buf = BufReader::new(&packet);
+        let header = Header::from_buf(&mut buf);
         assert_eq!(header.additional_count, 256);
     }
 }
